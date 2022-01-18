@@ -1,12 +1,26 @@
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-import Counter from "../components/Counter";
-import { increase, decrease } from "../modules/counter";
+import { useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import Counter from '../components/Counter';
+import { increase, decrease } from '../modules/counter';
 
-const CounterContainer = ({ number, increase, decrease }) => {
-    return (
-        <Counter number={number} onIncrease={increase} onDecrease={decrease} />
-    );
+// const CounterContainer = ({ number, increase, decrease }) => {
+//     return (
+//         <Counter number={number} onIncrease={increase} onDecrease={decrease} />
+//     );
+// };
+
+const CounterContainer = () => {
+  const number = useSelector((state) => state.counter.number);
+  const dispatch = useDispatch();
+  const onIncrease = useCallback(() => dispatch(increase()), [dispatch]);
+  const onDecrease = useCallback(() => dispatch(decrease()), [dispatch]);
+  return (
+    <Counter
+      number={number}
+      onIncrease={() => dispatch(onIncrease)}
+      onDecrease={() => dispatch(onDecrease)}
+    />
+  );
 };
 
 // const mapStateToProps = state => ({
@@ -30,18 +44,20 @@ const CounterContainer = ({ number, increase, decrease }) => {
 //     mapDispatchToProps,
 // )(CounterContainer);
 
-export default connect(
-    state => ({
-        number: state.counter.number,
-    }),
-    dispatch => 
-        // increase: () => dispatch(increase()),
-        // decrease: () => dispatch(decrease()),
-        bindActionCreators(
-            {
-                increase,
-                decrease,
-            },
-            dispatch,
-        ),
-)(CounterContainer);
+// export default connect(
+//   (state) => ({
+//     number: state.counter.number,
+//   }),
+//   (dispatch) =>
+//     // increase: () => dispatch(increase()),
+//     // decrease: () => dispatch(decrease()),
+//     bindActionCreators(
+//       {
+//         increase,
+//         decrease,
+//       },
+//       dispatch,
+//     ),
+// )(CounterContainer);
+
+export default CounterContainer;
